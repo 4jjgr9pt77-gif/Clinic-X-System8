@@ -1,0 +1,26 @@
+CLINIC X - How to open with one click (Windows)
+==============================================
+
+FIRST TIME ONLY
+1. Install Node.js from https://nodejs.org
+   (Choose LTS version, then Next Next Install)
+
+2. Unzip ClinicX-Desktop-App.zip
+
+3. Open the folder ClinicX-App
+
+4. Double-click:  Create-Desktop-Icon.bat
+   → This puts "Clinic X" icon on your Desktop
+
+EVERY DAY
+- Double-click the Desktop icon:  Clinic X
+- Login and use the system
+
+LOGIN
+  admin   / admin123
+  doctor  / doctor123
+  nurse   / nurse123
+  cashier / cashier123
+
+If icon does not work, double-click:
+  Start-ClinicX-Windows.bat

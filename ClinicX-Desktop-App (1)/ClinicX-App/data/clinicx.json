@@ -1,0 +1,70 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "username": "admin",
+      "password": "a8b6a8784c8590ab738dde83a15a93eb8a630a64842d16656e6d5be92b2faf6d",
+      "name": "System Admin",
+      "role": "admin",
+      "active": true
+    },
+    {
+      "id": "u2",
+      "username": "doctor",
+      "password": "89c69d20df94d74bd02fd502a12d2bebfcdd3b30641c4e3b639698c3b92bd69f",
+      "name": "Dr. Henry Tan",
+      "role": "doctor",
+      "active": true
+    },
+    {
+      "id": "u3",
+      "username": "nurse",
+      "password": "cb751692101f205d43fff92daa4d85ec2a7524176772b334091b57b004b01f4d",
+      "name": "Nurse Amy",
+      "role": "nurse",
+      "active": true
+    },
+    {
+      "id": "u4",
+      "username": "cashier",
+      "password": "fe7789b1c6b0f92a48195550d7c64e239925c30deac2bcd529b0cb5d46bf90da",
+      "name": "Cashier Lim",
+      "role": "cashier",
+      "active": true
+    }
+  ],
+  "patients": [],
+  "visits": [],
+  "consultations": [],
+  "prescriptions": [],
+  "payments": [],
+  "mcs": [],
+  "stocks": [],
+  "suppliers": [],
+  "purchaseOrders": [],
+  "goodsReceives": [],
+  "stockAdjustments": [],
+  "goodsReturns": [],
+  "corporates": [],
+  "invoices": [],
+  "corporatePayments": [],
+  "appointments": [],
+  "nextIds": {
+    "patient": 1,
+    "visit": 1,
+    "consultation": 1,
+    "prescription": 1,
+    "payment": 1,
+    "mc": 1,
+    "stock": 1,
+    "supplier": 1,
+    "po": 1,
+    "gr": 1,
+    "adjustment": 1,
+    "goodsReturn": 1,
+    "corporate": 1,
+    "invoice": 1,
+    "corpPayment": 1,
+    "appointment": 1
+  }
+}

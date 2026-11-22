@@ -1,0 +1,17 @@
+{
+  "name": "clinicx-app",
+  "version": "1.0.0",
+  "description": "Clinic X Desktop App",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "node server.js",
+    "app": "electron ."
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

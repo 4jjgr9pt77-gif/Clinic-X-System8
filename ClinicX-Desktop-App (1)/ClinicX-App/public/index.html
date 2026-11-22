@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Clinic X" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/img/logo.svg" />
+  <title>Clinic X | Clinic Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          primary: {50:'#eff6ff',100:'#dbeafe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af'},
+          accent: {500:'#14b8a6',600:'#0d9488'}
+        }
+      }}
+    }
+  </script>
+  <style>
+    .status-waiting{background:#fef3c7;color:#92400e}
+    .status-consulting{background:#dbeafe;color:#1e40af}
+    .status-dispensary{background:#f3e8ff;color:#6b21a8}
+    .status-payment{background:#ffedd5;color:#9a3412}
+    .status-completed{background:#dcfce7;color:#166534}
+    .status-scheduled{background:#e0f2fe;color:#075985}
+    .status-pending{background:#fef3c7;color:#92400e}
+    .status-received{background:#dcfce7;color:#166534}
+    .status-posted{background:#dbeafe;color:#1e40af}
+    .status-paid{background:#dcfce7;color:#166534}
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+<div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
+<div id="app">
+
+  <!-- LOGIN - Real Clinic Style -->
+  <div id="login-page" class="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Realistic clinic background -->
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,58,138,0.75) 40%, rgba(13,148,136,0.7) 100%), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; animation: slowZoom 25s ease-in-out infinite alternate;"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-slate-900/30"></div>
+    </div>
+    <style>
+      @keyframes slowZoom {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.08); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+      }
+      .login-card {
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+      }
+    </style>
+    <div class="relative z-10 w-full max-w-md mx-4">
+      <div class="login-card bg-white rounded-2xl p-8 border border-white/20">
+        <div class="text-center mb-8">
+          <img src="/img/logo.svg" alt="Clinic X" class="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg ring-4 ring-white/50" style="animation: float 3s ease-in-out infinite;" />
+          <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Clinic X</h1>
+          <p class="text-slate-500 text-sm mt-1">Clinic Management System</p>
+          <div class="mt-3 inline-flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+            Secure Staff Login
+          </div>
+        </div>
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Username</label>
+            <input type="text" id="login-username" autocomplete="username"
+              class="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              placeholder="Enter your username" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <input type="password" id="login-password" autocomplete="current-password"
+              class="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              placeholder="Enter your password" required />
+          </div>
+          <div id="login-error" class="text-red-600 text-sm hidden bg-red-50 rounded-lg px-3 py-2"></div>
+          <button type="submit"
+            class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg transition shadow-sm hover:shadow">
+            Sign In to Clinic X
+          </button>
+        </form>
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <p class="text-xs text-slate-400 text-center mb-2">Demo accounts</p>
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-500">
+            <div class="bg-slate-50 rounded px-2 py-1.5 text-center">admin / admin123</div>
+            <div class="bg-slate-50 rounded px-2 py-1.5 text-center">doctor / doctor123</div>
+            <div class="bg-slate-50 rounded px-2 py-1.5 text-center">nurse / nurse123</div>
+            <div class="bg-slate-50 rounded px-2 py-1.5 text-center">cashier / cashier123</div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-white/60 text-xs mt-6">© Clinic X · Inspired by CliniSYS GP</p>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main-app" class="hidden">
+    <header class="bg-slate-800 text-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="/img/logo.svg" alt="Clinic X" class="w-9 h-9 rounded-full shadow ring-2 ring-white/20" />
+          <div>
+            <div class="font-semibold text-base leading-tight tracking-tight">Clinic X</div>
+            <div class="text-[11px] text-slate-300">Clinic Management System</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 text-xs bg-slate-700/80 px-2.5 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="user-info"></span>
+          </div>
+          <span id="user-info-mobile" class="sm:hidden text-sm"></span>
+          <button id="btn-logout" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex gap-1 overflow-x-auto text-sm" id="nav-links"></div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page hidden">
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+          <h2 class="text-xl font-bold">Dashboard</h2>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="showPage('patients'); loadPatients(); showNewPatientModal();" class="bg-blue-700 text-white text-sm px-3 py-1.5 rounded-lg">+ Register Patient</button>
+            <button onclick="showPage('appointments'); loadAppointments();" class="border border-slate-300 text-sm px-3 py-1.5 rounded-lg">Appointments</button>
+            <button onclick="showPage('queue'); loadQueue();" class="border border-slate-300 text-sm px-3 py-1.5 rounded-lg">View Queue</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="stats-cards"></div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl shadow p-4">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold">Today's Queue</h3>
+              <button onclick="showPage('queue'); loadQueue();" class="text-xs text-blue-600">Open →</button>
+            </div>
+            <div id="dashboard-queue"></div>
+          </div>
+          <div class="bg-white rounded-xl shadow p-4">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold">Alerts</h3>
+            </div>
+            <div id="dashboard-lowstock"></div>
+            <div id="dashboard-appts" class="mt-3 pt-3 border-t"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PATIENTS -->
+      <section id="page-patients" class="page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Patients</h2>
+          <button onclick="showNewPatientModal()" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm">+ New Patient</button>
+        </div>
+        <input type="text" id="patient-search" placeholder="Search name / IC / phone..." class="border rounded-lg px-3 py-2 w-full max-w-md mb-4" onkeyup="loadPatients(this.value)" />
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Name</th><th class="text-left p-3">IC</th><th class="text-left p-3">Type</th><th class="text-left p-3">Phone</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody id="patients-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- QUEUE -->
+      <section id="page-queue" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Queue</h2>
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Queue</th><th class="text-left p-3">Patient</th><th class="text-left p-3">Reason</th><th class="text-left p-3">Status</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody id="queue-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CONSULTATION -->
+      <section id="page-consultation" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Consultation</h2>
+        <div id="consult-empty" class="text-gray-500">Select a patient from Queue first.</div>
+        <div id="consult-form" class="hidden space-y-4">
+          <div class="flex flex-wrap gap-2 items-center justify-between">
+            <div class="font-semibold text-lg" id="consult-patient-name"></div>
+            <div class="flex gap-2">
+              <button onclick="printMC()" class="text-sm border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50">Print MC</button>
+              <button onclick="printPrescriptionLabel()" class="text-sm border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50">Print Rx Label</button>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="md:col-span-2 bg-white rounded-xl shadow p-5 space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Consultation Notes</label>
+                <textarea id="consult-notes" rows="4" class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Diagnosis</label>
+                <input id="consult-diagnosis" class="w-full border rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <label class="text-sm font-medium">Prescription</label>
+                  <button type="button" onclick="addRxRow()" class="text-sm text-blue-600">+ Add Drug</button>
+                </div>
+                <div id="rx-list" class="space-y-2"></div>
+              </div>
+              <button onclick="saveConsultation()" class="bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium">Save & Send to Dispensary</button>
+            </div>
+            <div class="bg-white rounded-xl shadow p-4">
+              <h3 class="font-semibold text-sm mb-3 border-b pb-2">Patient Visit History</h3>
+              <div id="patient-history" class="text-sm space-y-3 max-h-96 overflow-y-auto">
+                <p class="text-slate-400">Select patient to load history</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISPENSARY -->
+      <section id="page-dispensary" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Dispensary</h2>
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Patient</th><th class="text-left p-3">Drug</th><th class="text-left p-3">Dosage</th><th class="text-left p-3">Qty</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody id="dispensary-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAYMENT -->
+      <section id="page-payment" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Payment Collection</h2>
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Patient</th><th class="text-left p-3">Type</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody id="payment-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- INVENTORY -->
+      <section id="page-inventory" class="page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Inventory</h2>
+          <div class="flex gap-2">
+            <button onclick="showNewStockModal()" class="bg-primary-600 text-white px-3 py-2 rounded-lg text-sm">+ Stock</button>
+            <button onclick="showNewSupplierModal()" class="bg-gray-600 text-white px-3 py-2 rounded-lg text-sm">+ Supplier</button>
+            <button onclick="showNewPOModal()" class="bg-accent-600 text-white px-3 py-2 rounded-lg text-sm">+ Purchase Order</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-4 text-sm">
+          <button onclick="showInventoryTab('stocks')" class="px-3 py-1 rounded bg-primary-100 text-primary-800" id="tab-stocks">Stocks</button>
+          <button onclick="showInventoryTab('suppliers')" class="px-3 py-1 rounded bg-gray-100" id="tab-suppliers">Suppliers</button>
+          <button onclick="showInventoryTab('po')" class="px-3 py-1 rounded bg-gray-100" id="tab-po">Purchase Orders</button>
+          <button onclick="showInventoryTab('return')" class="px-3 py-1 rounded bg-gray-100" id="tab-return">Goods Return</button>
+          <button onclick="showInventoryTab('adjust')" class="px-3 py-1 rounded bg-gray-100" id="tab-adjust">Stock Adjustment</button>
+        </div>
+        <div id="inv-stocks" class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Code</th><th class="text-left p-3">Name</th><th class="text-left p-3">Qty</th><th class="text-left p-3">Price</th><th class="text-left p-3">Reorder</th><th class="text-left p-3">Expiry</th>
+            </tr></thead>
+            <tbody id="stocks-table"></tbody>
+          </table>
+        </div>
+        <div id="inv-suppliers" class="hidden bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Name</th><th class="text-left p-3">Contact</th><th class="text-left p-3">Phone</th>
+            </tr></thead>
+            <tbody id="suppliers-table"></tbody>
+          </table>
+        </div>
+        <div id="inv-po" class="hidden bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">PO#</th><th class="text-left p-3">Supplier</th><th class="text-left p-3">Total</th><th class="text-left p-3">Status</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody id="po-table"></tbody>
+          </table>
+        </div>
+        <div id="inv-return" class="hidden">
+          <div class="flex justify-between mb-3">
+            <h3 class="font-semibold">Goods Return to Supplier</h3>
+            <button onclick="showGoodsReturnModal()" class="bg-orange-600 text-white px-3 py-1.5 rounded text-sm">+ Return Stock</button>
+          </div>
+          <div class="bg-white rounded-xl shadow overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50"><tr>
+                <th class="text-left p-3">Date</th><th class="text-left p-3">Stock</th><th class="text-left p-3">Qty</th><th class="text-left p-3">Reason</th><th class="text-left p-3">Supplier</th>
+              </tr></thead>
+              <tbody id="return-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="inv-adjust" class="hidden">
+          <div class="flex justify-between mb-3">
+            <h3 class="font-semibold">Stock Adjustment</h3>
+            <button onclick="showStockAdjustModal()" class="bg-purple-600 text-white px-3 py-1.5 rounded text-sm">+ Adjust Stock</button>
+          </div>
+          <div class="bg-white rounded-xl shadow overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50"><tr>
+                <th class="text-left p-3">Date</th><th class="text-left p-3">Stock</th><th class="text-left p-3">Old Qty</th><th class="text-left p-3">New Qty</th><th class="text-left p-3">Reason</th>
+              </tr></thead>
+              <tbody id="adjust-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- CORPORATE -->
+      <section id="page-corporate" class="page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Corporate Invoicing</h2>
+          <div class="flex gap-2">
+            <button onclick="showNewCorporateModal()" class="bg-primary-600 text-white px-3 py-2 rounded-lg text-sm">+ Corporate</button>
+            <button onclick="showNewInvoiceModal()" class="bg-accent-600 text-white px-3 py-2 rounded-lg text-sm">+ Invoice</button>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl shadow p-4">
+            <h3 class="font-semibold mb-3">Corporates</h3>
+            <div id="corporates-list"></div>
+          </div>
+          <div class="bg-white rounded-xl shadow p-4">
+            <h3 class="font-semibold mb-3">Invoices</h3>
+            <div id="invoices-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- APPOINTMENTS -->
+      <section id="page-appointments" class="page hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Appointment Planner</h2>
+          <button onclick="showNewAppointmentModal()" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">+ New Appointment</button>
+        </div>
+        <div class="mb-4 flex flex-wrap gap-2 items-center">
+          <button onclick="apptPrevWeek()" class="border px-3 py-1.5 rounded text-sm">← Prev</button>
+          <input type="date" id="appt-date-filter" class="border rounded-lg px-3 py-1.5 text-sm" onchange="loadAppointments()" />
+          <button onclick="apptNextWeek()" class="border px-3 py-1.5 rounded text-sm">Next →</button>
+          <button onclick="apptGoToday()" class="bg-slate-200 px-3 py-1.5 rounded text-sm">Today</button>
+        </div>
+        <!-- Calendar week view -->
+        <div class="bg-white rounded-xl shadow p-4 mb-4 overflow-x-auto">
+          <div id="appt-calendar" class="min-w-[700px]"></div>
+        </div>
+        <!-- List view -->
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50"><tr>
+              <th class="text-left p-3">Date</th><th class="text-left p-3">Time</th><th class="text-left p-3">Patient</th><th class="text-left p-3">Doctor</th><th class="text-left p-3">Reason</th><th class="text-left p-3">Status</th>
+            </tr></thead>
+            <tbody id="appointments-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- REPORTS -->
+      <section id="page-reports" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Reports</h2>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <button onclick="loadSalesReport()" class="bg-white rounded-xl shadow p-4 text-left hover:ring-2 hover:ring-primary-500">
+            <div class="font-semibold">Sales & Collection</div>
+            <div class="text-sm text-gray-500">Today's payments</div>
+          </button>
+          <button onclick="loadInventoryReport()" class="bg-white rounded-xl shadow p-4 text-left hover:ring-2 hover:ring-primary-500">
+            <div class="font-semibold">Inventory Report</div>
+            <div class="text-sm text-gray-500">Stock balance & low stock</div>
+          </button>
+          <button onclick="loadPrescriptionReport()" class="bg-white rounded-xl shadow p-4 text-left hover:ring-2 hover:ring-primary-500">
+            <div class="font-semibold">Prescription Report</div>
+            <div class="text-sm text-gray-500">Drugs dispensed today</div>
+          </button>
+          <button onclick="loadPsychotropicReport()" class="bg-white rounded-xl shadow p-4 text-left hover:ring-2 hover:ring-blue-500">
+            <div class="font-semibold">MOH Psychotropic Report</div>
+            <div class="text-sm text-slate-500">Prescription Register for Psychotropic Substances</div>
+          </button>
+          <button onclick="loadAgingReport()" class="bg-white rounded-xl shadow p-4 text-left hover:ring-2 hover:ring-blue-500">
+            <div class="font-semibold">Corporate Aging / Outstanding</div>
+            <div class="text-sm text-slate-500">30 / 60 / 90 days outstanding by company</div>
+          </button>
+        </div>
+        <div id="report-result" class="bg-white rounded-xl shadow p-4 hidden"></div>
+      </section>
+
+      <!-- USERS -->
+      <section id="page-users" class="page hidden">
+        <h2 class="text-xl font-bold mb-4">Users</h2>
+        <div class="bg-white rounded-xl shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr>
+              <th class="text-left p-3">Username</th><th class="text-left p-3">Name</th><th class="text-left p-3">Role</th><th class="text-left p-3">Active</th>
+            </tr></thead>
+            <tbody id="users-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+  <div id="modal-content" class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto"></div>
+</div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('clinicx_token');
+let currentUser = null;
+let currentVisit = null;
+let rxCounter = 0;
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(API + path, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + name);
+  if (el) el.classList.remove('hidden');
+}
+function statusBadge(s) {
+  return `<span class="px-2 py-0.5 rounded text-xs font-medium status-${s}">${s}</span>`;
+}
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal').classList.remove('hidden');
+}
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+}
+
+// AUTH
+async function login(e) {
+  e.preventDefault();
+  try {
+    const data = await api('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value
+      })
+    });
+    token = data.token;
+    currentUser = data.user;
+    localStorage.setItem('clinicx_token', token);
+    showApp();
+    if (typeof toast === 'function') toast('Welcome, ' + currentUser.name, 'success');
+  } catch (err) {
+    const el = document.getElementById('login-error');
+    el.textContent = err.message;
+    el.classList.remove('hidden');
+  }
+}
+function logout() {
+  token = null; currentUser = null;
+  localStorage.removeItem('clinicx_token');
+  document.getElementById('main-app').classList.add('hidden');
+  document.getElementById('login-page').classList.remove('hidden');
+}
+function showApp() {
+  document.getElementById('login-page').classList.add('hidden');
+  document.getElementById('main-app').classList.remove('hidden');
+  const label = `${currentUser.name} · ${currentUser.role}`;
+  const el = document.getElementById('user-info');
+  if (el) el.textContent = label;
+  const el2 = document.getElementById('user-info-mobile');
+  if (el2) el2.textContent = label;
+  buildNav();
+  showPage('dashboard');
+  loadDashboard();
+}
+function buildNav() {
+  const role = currentUser.role;
+  const links = [
+    { page:'dashboard', label:'Dashboard', roles:['admin','doctor','nurse','cashier'] },
+    { page:'patients', label:'Patients', roles:['admin','nurse','doctor','cashier'] },
+    { page:'queue', label:'Queue', roles:['admin','nurse','doctor','cashier'] },
+    { page:'consultation', label:'Consultation', roles:['admin','doctor'] },
+    { page:'dispensary', label:'Dispensary', roles:['admin','nurse','cashier'] },
+    { page:'payment', label:'Payment', roles:['admin','cashier'] },
+    { page:'inventory', label:'Inventory', roles:['admin','nurse'] },
+    { page:'corporate', label:'Corporate', roles:['admin','cashier'] },
+    { page:'appointments', label:'Appointments', roles:['admin','nurse','doctor','cashier'] },
+    { page:'reports', label:'Reports', roles:['admin','cashier'] },
+    { page:'users', label:'Users', roles:['admin'] }
+  ].filter(l => l.roles.includes(role));
+
+  const nav = document.getElementById('nav-links');
+  nav.innerHTML = links.map(l =>
+    `<button data-page="${l.page}" class="px-3 py-3 font-medium text-gray-600 hover:text-primary-600 border-b-2 border-transparent hover:border-primary-600 whitespace-nowrap">${l.label}</button>`
+  ).join('');
+  nav.querySelectorAll('button').forEach(btn => {
+    btn.onclick = () => {
+      showPage(btn.dataset.page);
+      if (btn.dataset.page==='dashboard') loadDashboard();
+      if (btn.dataset.page==='patients') loadPatients();
+      if (btn.dataset.page==='queue') loadQueue();
+      if (btn.dataset.page==='dispensary') loadDispensary();
+      if (btn.dataset.page==='payment') loadPaymentQueue();
+      if (btn.dataset.page==='inventory') { showInventoryTab('stocks'); loadStocks(); }
+      if (btn.dataset.page==='corporate') { loadCorporates(); loadInvoices(); }
+      if (btn.dataset.page==='appointments') loadAppointments();
+      if (btn.dataset.page==='users') loadUsers();
+    };
+  });
+}
+
+// DASHBOARD
+async function loadDashboard() {
+  try {
+    const s = await api('/api/stats');
+    document.getElementById('stats-cards').innerHTML = `
+      <div class="bg-white rounded-xl shadow p-4"><div class="text-2xl font-bold">${s.todayVisits}</div><div class="text-sm text-gray-500">Today Visits</div></div>
+      <div class="bg-white rounded-xl shadow p-4"><div class="text-2xl font-bold text-yellow-600">${s.waiting}</div><div class="text-sm text-gray-500">Waiting</div></div>
+      <div class="bg-white rounded-xl shadow p-4"><div class="text-2xl font-bold text-red-600">${s.lowStock}</div><div class="text-sm text-gray-500">Low Stock</div></div>
+      <div class="bg-white rounded-xl shadow p-4"><div class="text-2xl font-bold text-blue-600">${s.todayAppointments}</div><div class="text-sm text-gray-500">Appointments</div></div>
+    `;
+    const { visits } = await api('/api/visits');
+    document.getElementById('dashboard-queue').innerHTML = visits.length
+      ? `<table class="w-full text-sm"><tbody>${visits.slice(0,8).map(v=>`<tr class="border-t"><td class="py-1">${v.patientName}</td><td>${statusBadge(v.status)}</td></tr>`).join('')}</tbody></table>`
+      : '<p class="text-gray-500 text-sm">No visits today</p>';
+
+    const inv = await api('/api/reports/inventory');
+    document.getElementById('dashboard-lowstock').innerHTML = inv.lowStock.length
+      ? '<p class="text-xs font-medium text-red-600 mb-1">Low stock</p>' + inv.lowStock.slice(0,5).map(s=>`<div class="text-sm py-1 border-b">${s.name} <span class="text-red-600 font-medium">(${s.qty})</span></div>`).join('')
+      : '<p class="text-slate-500 text-sm">No low stock alerts</p>';
+    // today appointments
+    try {
+      const today = new Date().toISOString().slice(0,10);
+      const { appointments } = await api('/api/appointments?date=' + today);
+      const apEl = document.getElementById('dashboard-appts');
+      if (apEl) {
+        apEl.innerHTML = appointments.length
+          ? '<p class="text-xs font-medium text-blue-700 mb-1">Today\'s appointments</p>' + appointments.slice(0,5).map(a => `<div class="text-sm py-1">${a.time} · ${a.patientName}</div>`).join('')
+          : '<p class="text-slate-500 text-sm">No appointments today</p>';
+      }
+    } catch(e) {}
+  } catch(e){ console.error(e); }
+}
+
+// PATIENTS
+async function loadPatients(q='') {
+  const { patients } = await api('/api/patients?q='+encodeURIComponent(q));
+  document.getElementById('patients-table').innerHTML = patients.map(p => `
+    <tr class="border-t">
+      <td class="p-3">${p.name}</td>
+      <td class="p-3">${p.icNo||'-'}</td>
+      <td class="p-3">${p.patientType}${p.panelCompany?' ('+p.panelCompany+')':''}</td>
+      <td class="p-3">${p.phone||'-'}</td>
+      <td class="p-3 text-center"><button onclick="registerVisitFor(${p.id})" class="text-primary-600 text-sm">Register Visit</button></td>
+    </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">No patients</td></tr>';
+}
+function showNewPatientModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Patient</h3>
+    <form id="np-form" class="space-y-3">
+      <input name="name" placeholder="Full Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="icNo" placeholder="IC / Passport" class="w-full border rounded-lg px-3 py-2" />
+      <select name="gender" class="w-full border rounded-lg px-3 py-2"><option value="">Gender</option><option>Male</option><option>Female</option></select>
+      <input name="phone" placeholder="Phone" class="w-full border rounded-lg px-3 py-2" />
+      <select name="patientType" class="w-full border rounded-lg px-3 py-2"><option value="cash">Cash</option><option value="panel">Panel</option></select>
+      <input name="panelCompany" placeholder="Panel / Corporate name" class="w-full border rounded-lg px-3 py-2" />
+      <input name="allergies" placeholder="Allergies" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Save</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('np-form').onsubmit = async e => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target));
+    await api('/api/patients', { method:'POST', body: JSON.stringify(body) });
+    closeModal(); loadPatients();
+  };
+}
+async function registerVisitFor(patientId) {
+  const reason = prompt('Reason for visit:') || 'General';
+  await api('/api/visits', { method:'POST', body: JSON.stringify({ patientId, reason }) });
+  alert('Added to queue');
+  showPage('queue'); loadQueue();
+}
+
+// QUEUE
+async function loadQueue() {
+  const { visits } = await api('/api/visits');
+  document.getElementById('queue-table').innerHTML = visits.map(v => `
+    <tr class="border-t">
+      <td class="p-3"><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-bold text-sm">${v.queueNo||v.id}</span></td>
+      <td class="p-3 font-medium">${v.patientName}</td>
+      <td class="p-3">${v.reason||'-'}</td>
+      <td class="p-3">${statusBadge(v.status)}</td>
+      <td class="p-3 text-center">
+        ${v.status==='waiting' && (currentUser.role==='doctor'||currentUser.role==='admin')
+          ? `<button onclick="startConsult(${v.id},'${v.patientName.replace(/'/g,"\\'")}')" class="text-primary-600 text-sm">Start Consult</button>` : '-'}
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">Queue empty</td></tr>';
+}
+async function startConsult(visitId, name) {
+  currentVisit = { id: visitId, patientName: name };
+  await api('/api/visits/'+visitId, { method:'PUT', body: JSON.stringify({ status:'consulting' }) });
+  document.getElementById('consult-empty').classList.add('hidden');
+  document.getElementById('consult-form').classList.remove('hidden');
+  document.getElementById('consult-patient-name').textContent = name;
+  document.getElementById('consult-notes').value = '';
+  document.getElementById('consult-diagnosis').value = '';
+  document.getElementById('rx-list').innerHTML = '';
+  rxCounter = 0; addRxRow();
+  showPage('consultation');
+}
+function addRxRow() {
+  const div = document.createElement('div');
+  div.className = 'flex gap-2';
+  div.innerHTML = `
+    <input placeholder="Drug" class="border rounded px-2 py-1 flex-1 rx-drug" />
+    <input placeholder="Dosage" class="border rounded px-2 py-1 w-24 rx-dosage" />
+    <input type="number" value="1" class="border rounded px-2 py-1 w-16 rx-qty" />
+    <input placeholder="Instruction" class="border rounded px-2 py-1 flex-1 rx-instruction" />`;
+  document.getElementById('rx-list').appendChild(div);
+}
+async function saveConsultation() {
+  if (!currentVisit) return;
+  const prescriptions = [];
+  document.querySelectorAll('#rx-list > div').forEach(row => {
+    const drug = row.querySelector('.rx-drug').value.trim();
+    if (drug) prescriptions.push({
+      drugName: drug,
+      dosage: row.querySelector('.rx-dosage').value,
+      quantity: Number(row.querySelector('.rx-qty').value)||1,
+      instruction: row.querySelector('.rx-instruction').value
+    });
+  });
+  await api('/api/consultations', {
+    method:'POST',
+    body: JSON.stringify({
+      visitId: currentVisit.id,
+      notes: document.getElementById('consult-notes').value,
+      diagnosis: document.getElementById('consult-diagnosis').value,
+      prescriptions
+    })
+  });
+  alert('Saved. Sent to Dispensary.');
+  currentVisit = null;
+  document.getElementById('consult-form').classList.add('hidden');
+  document.getElementById('consult-empty').classList.remove('hidden');
+  showPage('queue'); loadQueue();
+}
+
+// DISPENSARY
+async function loadDispensary() {
+  const { prescriptions } = await api('/api/prescriptions?status=pending');
+  document.getElementById('dispensary-table').innerHTML = prescriptions.map(rx => `
+    <tr class="border-t">
+      <td class="p-3">${rx.patientName}</td>
+      <td class="p-3">${rx.drugName}</td>
+      <td class="p-3">${rx.dosage||'-'}</td>
+      <td class="p-3">${rx.quantity}</td>
+      <td class="p-3 text-center"><button onclick="dispenseRx(${rx.id})" class="text-primary-600 text-sm">Dispense</button></td>
+    </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">Nothing pending</td></tr>';
+}
+async function dispenseRx(id) {
+  await api('/api/prescriptions/'+id, { method:'PUT', body: JSON.stringify({ status:'dispensed' }) });
+  loadDispensary();
+}
+
+// PAYMENT
+async function loadPaymentQueue() {
+  const { visits } = await api('/api/visits?status=payment');
+  document.getElementById('payment-table').innerHTML = visits.map(v => `
+    <tr class="border-t">
+      <td class="p-3">${v.patientName}</td>
+      <td class="p-3">${v.patientType}${v.panelCompany?' · '+v.panelCompany:''}</td>
+      <td class="p-3 text-center">
+        <button onclick="openPayment(${v.id},'${v.patientName.replace(/'/g,"\\'")}',${v.patientId},'${v.patientType}','${v.panelCompany||''}')" class="text-primary-600 text-sm">Collect</button>
+        <button onclick="printReceipt(${v.id}, \`${v.patientName}\`)" class="text-slate-500 text-sm ml-2">Receipt</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="3" class="p-4 text-center text-gray-500">No pending payments</td></tr>';
+}
+function openPayment(visitId, name, patientId, type, panel) {
+  openModal(`
+    <h3 class="font-bold text-lg mb-2">Payment · ${name}</h3>
+    <form id="pay-form" class="space-y-3">
+      <input type="number" name="amount" placeholder="Amount (RM)" required step="0.01" class="w-full border rounded-lg px-3 py-2" />
+      <select name="method" class="w-full border rounded-lg px-3 py-2">
+        <option value="cash">Cash</option><option value="card">Card</option><option value="panel">Panel</option>
+      </select>
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Confirm</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('pay-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    await api('/api/payments', {
+      method:'POST',
+      body: JSON.stringify({ visitId, patientId, amount: fd.get('amount'), method: fd.get('method'), panelCompany: panel })
+    });
+    closeModal(); loadPaymentQueue();
+    toast('Payment recorded', 'success');
+  };
+}
+
+// ========== INVENTORY ==========
+function showInventoryTab(tab) {
+  ['stocks','suppliers','po','return','adjust'].forEach(t => {
+    const el = document.getElementById('inv-'+t);
+    if (el) el.classList.toggle('hidden', t !== tab);
+    const btn = document.getElementById('tab-'+t);
+    if (btn) btn.className = t===tab ? 'px-3 py-1 rounded bg-primary-100 text-primary-800' : 'px-3 py-1 rounded bg-gray-100';
+  });
+  if (tab==='stocks') loadStocks();
+  if (tab==='suppliers') loadSuppliers();
+  if (tab==='po') loadPOs();
+  if (tab==='return') loadGoodsReturns();
+  if (tab==='adjust') loadAdjustments();
+}
+async function loadStocks() {
+  const { stocks } = await api('/api/stocks');
+  document.getElementById('stocks-table').innerHTML = stocks.map(s => `
+    <tr class="border-t ${ (s.qty||0) <= (s.reorderLevel||5) ? 'bg-red-50' : '' }">
+      <td class="p-3 font-mono text-xs">${s.code||'-'}</td>
+      <td class="p-3">${s.name}${s.isPsychotropic ? ' <span class="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded ml-1">PSYCHO</span>' : ''}</td>
+      <td class="p-3 font-medium ${ (s.qty||0) <= (s.reorderLevel||5) ? 'text-red-600' : '' }">${s.qty}</td>
+      <td class="p-3">RM ${Number(s.price||0).toFixed(2)}</td>
+      <td class="p-3">${s.reorderLevel}</td>
+      <td class="p-3">${s.expiryDate||'-'}</td>
+    </tr>`).join('') || '<tr><td colspan="6" class="p-4 text-center text-gray-500">No stocks yet</td></tr>';
+}
+function showNewStockModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Stock Item</h3>
+    <form id="stock-form" class="space-y-3">
+      <input name="name" placeholder="Drug / Item Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="code" placeholder="Code" class="w-full border rounded-lg px-3 py-2" />
+      <div class="grid grid-cols-2 gap-2">
+        <input name="qty" type="number" placeholder="Qty" value="0" class="border rounded-lg px-3 py-2" />
+        <input name="unit" placeholder="Unit (e.g. Tab)" class="border rounded-lg px-3 py-2" />
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input name="cost" type="number" step="0.01" placeholder="Cost" class="border rounded-lg px-3 py-2" />
+        <input name="price" type="number" step="0.01" placeholder="Selling Price" class="border rounded-lg px-3 py-2" />
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input name="reorderLevel" type="number" placeholder="Reorder Level" value="5" class="border rounded-lg px-3 py-2" />
+        <input name="expiryDate" type="date" class="border rounded-lg px-3 py-2" />
+      </div>
+      <input name="batchNo" placeholder="Batch No" class="w-full border rounded-lg px-3 py-2" />
+      <label class="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="isPsychotropic" value="1" /> Psychotropic substance (MOH controlled)
+      </label>
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Save</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('stock-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    body.isPsychotropic = fd.get('isPsychotropic') === '1';
+    await api('/api/stocks', { method:'POST', body: JSON.stringify(body) });
+    closeModal(); loadStocks();
+  };
+}
+async function loadSuppliers() {
+  const { suppliers } = await api('/api/suppliers');
+  document.getElementById('suppliers-table').innerHTML = suppliers.map(s => `
+    <tr class="border-t"><td class="p-3">${s.name}</td><td class="p-3">${s.contact||'-'}</td><td class="p-3">${s.phone||'-'}</td></tr>
+  `).join('') || '<tr><td colspan="3" class="p-4 text-center text-gray-500">No suppliers</td></tr>';
+}
+function showNewSupplierModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Supplier</h3>
+    <form id="sup-form" class="space-y-3">
+      <input name="name" placeholder="Supplier Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="contact" placeholder="Contact Person" class="w-full border rounded-lg px-3 py-2" />
+      <input name="phone" placeholder="Phone" class="w-full border rounded-lg px-3 py-2" />
+      <input name="email" placeholder="Email" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Save</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('sup-form').onsubmit = async e => {
+    e.preventDefault();
+    await api('/api/suppliers', { method:'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
+    closeModal(); loadSuppliers();
+  };
+}
+async function loadPOs() {
+  const { purchaseOrders } = await api('/api/purchase-orders');
+  document.getElementById('po-table').innerHTML = purchaseOrders.map(po => `
+    <tr class="border-t">
+      <td class="p-3">PO-${po.id}</td>
+      <td class="p-3">${po.supplierName||'-'}</td>
+      <td class="p-3">${po.total?.toFixed(2)||0}</td>
+      <td class="p-3">${statusBadge(po.status)}</td>
+      <td class="p-3 text-center">
+        ${po.status==='pending' ? `<button onclick="receivePO(${po.id})" class="text-primary-600 text-sm">Receive</button>` : '-'}
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">No POs</td></tr>';
+}
+function showNewPOModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Purchase Order</h3>
+    <form id="po-form" class="space-y-3">
+      <input name="supplierName" placeholder="Supplier Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="itemName" placeholder="Item / Drug Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <div class="grid grid-cols-2 gap-2">
+        <input name="qty" type="number" placeholder="Qty *" required class="border rounded-lg px-3 py-2" />
+        <input name="cost" type="number" step="0.01" placeholder="Unit Cost" class="border rounded-lg px-3 py-2" />
+      </div>
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Create PO</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('po-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const items = [{ name: fd.get('itemName'), qty: Number(fd.get('qty')), cost: Number(fd.get('cost')||0) }];
+    await api('/api/purchase-orders', {
+      method:'POST',
+      body: JSON.stringify({ supplierName: fd.get('supplierName'), items })
+    });
+    closeModal(); loadPOs();
+  };
+}
+async function receivePO(id) {
+  if (!confirm('Confirm goods received and update stock?')) return;
+  await api('/api/purchase-orders/'+id+'/receive', { method:'POST' });
+  toast('Goods received · stock updated', 'success');
+  loadPOs(); loadStocks();
+}
+
+// ========== CORPORATE ==========
+async function loadCorporates() {
+  const { corporates } = await api('/api/corporates');
+  document.getElementById('corporates-list').innerHTML = corporates.map(c => `
+    <div class="border-b py-2 text-sm">
+      <div class="font-medium">${c.name}</div>
+      <div class="text-gray-500">${c.contact||''} ${c.phone||''}</div>
+      <div class="text-xs">Ceiling/visit: RM ${c.ceilingPerVisit||0}</div>
+    </div>`).join('') || '<p class="text-gray-500 text-sm">No corporates yet</p>';
+}
+function showNewCorporateModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Corporate</h3>
+    <form id="corp-form" class="space-y-3">
+      <input name="name" placeholder="Company Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="code" placeholder="Code" class="w-full border rounded-lg px-3 py-2" />
+      <input name="contact" placeholder="Contact Person" class="w-full border rounded-lg px-3 py-2" />
+      <input name="phone" placeholder="Phone" class="w-full border rounded-lg px-3 py-2" />
+      <input name="ceilingPerVisit" type="number" placeholder="Ceiling per visit (RM)" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Save</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('corp-form').onsubmit = async e => {
+    e.preventDefault();
+    await api('/api/corporates', { method:'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
+    closeModal(); loadCorporates();
+  };
+}
+async function loadInvoices() {
+  const { invoices } = await api('/api/invoices');
+  document.getElementById('invoices-list').innerHTML = invoices.map(i => `
+    <div class="border-b py-2 text-sm flex justify-between">
+      <div>
+        <div class="font-medium">INV-${i.id} · ${i.corporateName}</div>
+        <div class="text-gray-500">${i.invoiceDate} · RM ${i.amount}</div>
+      </div>
+      <div>${statusBadge(i.status)}</div>
+    </div>`).join('') || '<p class="text-gray-500 text-sm">No invoices yet</p>';
+}
+function showNewInvoiceModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">Generate Invoice</h3>
+    <form id="inv-form" class="space-y-3">
+      <input name="corporateName" placeholder="Corporate Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="amount" type="number" step="0.01" placeholder="Amount (RM) *" required class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Generate</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('inv-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    await api('/api/invoices', {
+      method:'POST',
+      body: JSON.stringify({ corporateName: fd.get('corporateName'), amount: fd.get('amount') })
+    });
+    closeModal(); loadInvoices();
+  };
+}
+
+// ========== APPOINTMENTS ==========
+async function loadAppointments() {
+  const date = document.getElementById('appt-date-filter').value;
+  const q = date ? '?date='+date : '';
+  const { appointments } = await api('/api/appointments'+q);
+  document.getElementById('appointments-table').innerHTML = appointments.map(a => `
+    <tr class="border-t">
+      <td class="p-3">${a.date}</td>
+      <td class="p-3">${a.time}</td>
+      <td class="p-3">${a.patientName}</td>
+      <td class="p-3">${a.doctor||'-'}</td>
+      <td class="p-3">${a.reason||'-'}</td>
+      <td class="p-3">${statusBadge(a.status)}</td>
+    </tr>`).join('') || '<tr><td colspan="6" class="p-4 text-center text-gray-500">No appointments</td></tr>';
+}
+function showNewAppointmentModal() {
+  const today = new Date().toISOString().slice(0,10);
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">New Appointment</h3>
+    <form id="appt-form" class="space-y-3">
+      <input name="patientName" placeholder="Patient Name *" required class="w-full border rounded-lg px-3 py-2" />
+      <input name="doctor" placeholder="Doctor" class="w-full border rounded-lg px-3 py-2" />
+      <div class="grid grid-cols-2 gap-2">
+        <input name="date" type="date" value="${today}" required class="border rounded-lg px-3 py-2" />
+        <input name="time" type="time" value="09:00" class="border rounded-lg px-3 py-2" />
+      </div>
+      <input name="reason" placeholder="Reason" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg">Save</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('appt-form').onsubmit = async e => {
+    e.preventDefault();
+    await api('/api/appointments', { method:'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
+    closeModal(); loadAppointments();
+  };
+}
+
+// ========== REPORTS ==========
+async function loadSalesReport() {
+  const data = await api('/api/reports/sales');
+  document.getElementById('report-result').classList.remove('hidden');
+  document.getElementById('report-result').innerHTML = `
+    <h3 class="font-semibold mb-2">Sales & Collection (${data.from})</h3>
+    <p class="mb-2">Total transactions: <b>${data.count}</b> · Total amount: <b>RM ${data.total.toFixed(2)}</b></p>
+    <table class="w-full text-sm"><thead><tr><th class="text-left p-2">Time</th><th class="text-left p-2">Method</th><th class="text-left p-2">Amount</th></tr></thead>
+    <tbody>${data.payments.map(p=>`<tr class="border-t"><td class="p-2">${p.createdAt.slice(11,19)}</td><td class="p-2">${p.method}</td><td class="p-2">${p.amount}</td></tr>`).join('')}</tbody></table>`;
+}
+async function loadInventoryReport() {
+  const data = await api('/api/reports/inventory');
+  document.getElementById('report-result').classList.remove('hidden');
+  document.getElementById('report-result').innerHTML = `
+    <h3 class="font-semibold mb-2">Inventory Report</h3>
+    <p class="mb-2">Total items: <b>${data.totalItems}</b> · Low stock: <b class="text-red-600">${data.lowStock.length}</b></p>
+    <h4 class="font-medium mt-3 mb-1">Low Stock Items</h4>
+    ${data.lowStock.length ? data.lowStock.map(s=>`<div class="text-sm py-1">${s.name} — Qty: ${s.qty} (Reorder at ${s.reorderLevel})</div>`).join('') : '<p class="text-sm text-gray-500">None</p>'}`;
+}
+async function loadPrescriptionReport() {
+  const data = await api('/api/reports/prescriptions');
+  document.getElementById('report-result').classList.remove('hidden');
+  document.getElementById('report-result').innerHTML = `
+    <h3 class="font-semibold mb-2">Prescription Report (${data.from})</h3>
+    <table class="w-full text-sm"><thead><tr><th class="text-left p-2">Drug</th><th class="text-left p-2">Qty</th><th class="text-left p-2">Status</th></tr></thead>
+    <tbody>${data.prescriptions.map(p=>`<tr class="border-t"><td class="p-2">${p.drugName}</td><td class="p-2">${p.quantity}</td><td class="p-2">${p.status}</td></tr>`).join('') || '<tr><td colspan="3" class="p-2 text-gray-500">No data</td></tr>'}</tbody></table>`;
+}
+
+// USERS
+async function loadUsers() {
+  const { users } = await api('/api/users');
+  document.getElementById('users-table').innerHTML = users.map(u => `
+    <tr class="border-t"><td class="p-3">${u.username}</td><td class="p-3">${u.name}</td><td class="p-3">${u.role}</td><td class="p-3">${u.active?'Yes':'No'}</td></tr>
+  `).join('');
+}
+
+
+// ========== GOODS RETURN ==========
+async function loadGoodsReturns() {
+  try {
+    const { goodsReturns } = await api('/api/goods-returns');
+    document.getElementById('return-table').innerHTML = (goodsReturns||[]).map(r => `
+      <tr class="border-t">
+        <td class="p-3">${(r.createdAt||'').slice(0,10)}</td>
+        <td class="p-3">${r.stockName}</td>
+        <td class="p-3">${r.qty}</td>
+        <td class="p-3">${r.reason||'-'}</td>
+        <td class="p-3">${r.supplierName||'-'}</td>
+      </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">No returns yet</td></tr>';
+  } catch(e){ console.error(e); }
+}
+function showGoodsReturnModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">Goods Return to Supplier</h3>
+    <form id="gr-form" class="space-y-3">
+      <select name="stockId" id="gr-stock" required class="w-full border rounded-lg px-3 py-2"><option value="">Select Stock *</option></select>
+      <input name="qty" type="number" placeholder="Quantity to return *" required min="1" class="w-full border rounded-lg px-3 py-2" />
+      <input name="supplierName" placeholder="Supplier Name" class="w-full border rounded-lg px-3 py-2" />
+      <input name="reason" placeholder="Reason (expired / damaged / excess)" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-orange-600 text-white px-4 py-2 rounded-lg">Confirm Return</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  // load stocks into select
+  api('/api/stocks').then(({stocks}) => {
+    const sel = document.getElementById('gr-stock');
+    stocks.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = `${s.name} (Qty: ${s.qty})`;
+      sel.appendChild(opt);
+    });
+  });
+  document.getElementById('gr-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    try {
+      await api('/api/goods-returns', {
+        method: 'POST',
+        body: JSON.stringify({
+          stockId: Number(fd.get('stockId')),
+          qty: Number(fd.get('qty')),
+          supplierName: fd.get('supplierName'),
+          reason: fd.get('reason')
+        })
+      });
+      closeModal();
+      loadGoodsReturns();
+      loadStocks();
+      toast('Goods returned', 'success');
+    } catch(err){ alert(err.message); }
+  };
+}
+
+// ========== STOCK ADJUSTMENT ==========
+async function loadAdjustments() {
+  try {
+    const { adjustments } = await api('/api/stock-adjustments');
+    document.getElementById('adjust-table').innerHTML = (adjustments||[]).map(a => `
+      <tr class="border-t">
+        <td class="p-3">${(a.createdAt||'').slice(0,10)}</td>
+        <td class="p-3">${a.stockName}</td>
+        <td class="p-3">${a.oldQty}</td>
+        <td class="p-3 font-medium">${a.newQty}</td>
+        <td class="p-3">${a.reason||'-'}</td>
+      </tr>`).join('') || '<tr><td colspan="5" class="p-4 text-center text-gray-500">No adjustments yet</td></tr>';
+  } catch(e){ console.error(e); }
+}
+function showStockAdjustModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-4">Stock Adjustment</h3>
+    <form id="adj-form" class="space-y-3">
+      <select name="stockId" id="adj-stock" required class="w-full border rounded-lg px-3 py-2"><option value="">Select Stock *</option></select>
+      <input name="newQty" type="number" placeholder="New Quantity *" required min="0" class="w-full border rounded-lg px-3 py-2" />
+      <input name="reason" placeholder="Reason (stock take / damage / correction)" class="w-full border rounded-lg px-3 py-2" />
+      <div class="flex gap-2">
+        <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-lg">Save Adjustment</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg">Cancel</button>
+      </div>
+    </form>`);
+  api('/api/stocks').then(({stocks}) => {
+    const sel = document.getElementById('adj-stock');
+    stocks.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = `${s.name} (Current: ${s.qty})`;
+      sel.appendChild(opt);
+    });
+  });
+  document.getElementById('adj-form').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    try {
+      await api('/api/stock-adjustments', {
+        method: 'POST',
+        body: JSON.stringify({
+          stockId: Number(fd.get('stockId')),
+          newQty: Number(fd.get('newQty')),
+          reason: fd.get('reason')
+        })
+      });
+      closeModal();
+      loadAdjustments();
+      loadStocks();
+      toast('Stock adjusted', 'success');
+    } catch(err){ alert(err.message); }
+  };
+}
+
+// ========== MOH PSYCHOTROPIC REPORT ==========
+async function loadPsychotropicReport() {
+  try {
+    const data = await api('/api/reports/psychotropic');
+    document.getElementById('report-result').classList.remove('hidden');
+    document.getElementById('report-result').innerHTML = `
+      <h3 class="font-semibold mb-2">MOH Psychotropic Substances Register</h3>
+      <p class="text-sm text-gray-500 mb-3">Prescription Book / Register for Psychotropic Substances (${data.from})</p>
+      <p class="mb-2">Total records: <b>${data.count}</b></p>
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50"><tr>
+          <th class="text-left p-2">Date</th>
+          <th class="text-left p-2">Patient</th>
+          <th class="text-left p-2">IC</th>
+          <th class="text-left p-2">Drug</th>
+          <th class="text-left p-2">Qty</th>
+          <th class="text-left p-2">Status</th>
+        </tr></thead>
+        <tbody>
+          ${data.prescriptions.map(p => `
+            <tr class="border-t">
+              <td class="p-2">${p.date}</td>
+              <td class="p-2">${p.patientName}</td>
+              <td class="p-2">${p.patientIC||'-'}</td>
+              <td class="p-2 font-medium">${p.drugName}</td>
+              <td class="p-2">${p.quantity}</td>
+              <td class="p-2">${p.status}</td>
+            </tr>`).join('') || '<tr><td colspan="6" class="p-4 text-center text-gray-500">No psychotropic prescriptions found</td></tr>'}
+        </tbody>
+      </table>
+      <p class="text-xs text-gray-400 mt-3">Based on CliniSYS GP – Chapter 5.3 Ministry of Health Report</p>`;
+  } catch(e){ alert(e.message); }
+}
+
+// Fix stock form to send isPsychotropic
+
+
+// ========== APPOINTMENT PLANNER ==========
+function apptGoToday() {
+  document.getElementById('appt-date-filter').value = new Date().toISOString().slice(0,10);
+  loadAppointments();
+}
+function apptPrevWeek() {
+  const el = document.getElementById('appt-date-filter');
+  const d = new Date(el.value || new Date());
+  d.setDate(d.getDate() - 7);
+  el.value = d.toISOString().slice(0,10);
+  loadAppointments();
+}
+function apptNextWeek() {
+  const el = document.getElementById('appt-date-filter');
+  const d = new Date(el.value || new Date());
+  d.setDate(d.getDate() + 7);
+  el.value = d.toISOString().slice(0,10);
+  loadAppointments();
+}
+
+async function loadAppointments() {
+  const dateEl = document.getElementById('appt-date-filter');
+  if (!dateEl.value) dateEl.value = new Date().toISOString().slice(0,10);
+  const center = dateEl.value;
+  const { appointments } = await api('/api/appointments');
+  const dayList = appointments.filter(a => a.date === center);
+  document.getElementById('appointments-table').innerHTML = dayList.map(a => `
+    <tr class="border-t">
+      <td class="p-3">${a.date}</td>
+      <td class="p-3">${a.time}</td>
+      <td class="p-3">${a.patientName}</td>
+      <td class="p-3">${a.doctor||'-'}</td>
+      <td class="p-3">${a.reason||'-'}</td>
+      <td class="p-3">${statusBadge(a.status)}</td>
+    </tr>`).join('') || '<tr><td colspan="6" class="p-4 text-center text-slate-400">No appointments on this date</td></tr>';
+
+  const d0 = new Date(center);
+  const day = d0.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  const monday = new Date(d0);
+  monday.setDate(d0.getDate() + mondayOffset);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let cal = '<div class="grid grid-cols-7 gap-2 text-sm">';
+  days.forEach((dateStr, i) => {
+    const items = appointments.filter(a => a.date === dateStr);
+    const isToday = dateStr === new Date().toISOString().slice(0,10);
+    const isSelected = dateStr === center;
+    cal += '<div class="border rounded-lg p-2 min-h-[110px] ' + (isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : isToday ? 'bg-teal-50' : 'bg-white') + '">' +
+      '<div class="font-semibold text-xs mb-1 flex justify-between"><span>' + dayNames[i] + '</span><span class="text-slate-500">' + dateStr.slice(8) + '</span></div>' +
+      items.slice(0,4).map(a => '<div class="text-[11px] bg-blue-100 text-blue-800 rounded px-1 py-0.5 mb-1 truncate" title="' + a.patientName + ' ' + a.time + '">' + a.time + ' ' + a.patientName + '</div>').join('') +
+      (items.length > 4 ? '<div class="text-[10px] text-slate-400">+' + (items.length-4) + ' more</div>' : '') +
+      '</div>';
+  });
+  cal += '</div>';
+  const calEl = document.getElementById('appt-calendar');
+  if (calEl) calEl.innerHTML = cal;
+}
+
+async function loadPatientHistory(patientId) {
+  const box = document.getElementById('patient-history');
+  if (!box) return;
+  if (!patientId) { box.innerHTML = '<p class="text-slate-400">No patient selected</p>'; return; }
+  try {
+    const data = await api('/api/patients/' + patientId + '/history');
+    const visits = data.visits || [];
+    const consultations = data.consultations || [];
+    const prescriptions = data.prescriptions || [];
+    if (!visits.length) { box.innerHTML = '<p class="text-slate-400">No previous visits</p>'; return; }
+    let h = '';
+    visits.slice(0, 10).forEach(v => {
+      const c = consultations.find(x => x.visitId === v.id);
+      const rxs = prescriptions.filter(x => x.visitId === v.id);
+      h += '<div class="border-b border-slate-100 pb-2 mb-2">';
+      h += '<div class="font-medium text-xs text-slate-600">' + (v.date || (v.createdAt||'')).slice(0,10) + ' · ' + v.status + '</div>';
+      if (c) {
+        h += '<div class="text-xs mt-0.5"><span class="text-slate-500">Dx:</span> ' + (c.diagnosis || '-') + '</div>';
+        h += '<div class="text-xs text-slate-500 mt-0.5">' + (c.notes || '') + '</div>';
+      }
+      if (rxs.length) h += '<div class="text-xs mt-1 text-blue-700">' + rxs.map(r => r.drugName).join(', ') + '</div>';
+      h += '</div>';
+    });
+    box.innerHTML = h;
+  } catch (e) {
+    box.innerHTML = '<p class="text-red-500 text-xs">Could not load history</p>';
+  }
+}
+
+async function startConsult(visitId, name) {
+  currentVisit = { id: visitId, patientName: name };
+  await api('/api/visits/' + visitId, { method: 'PUT', body: JSON.stringify({ status: 'consulting' }) });
+  document.getElementById('consult-empty').classList.add('hidden');
+  document.getElementById('consult-form').classList.remove('hidden');
+  document.getElementById('consult-patient-name').textContent = name;
+  document.getElementById('consult-notes').value = '';
+  document.getElementById('consult-diagnosis').value = '';
+  document.getElementById('rx-list').innerHTML = '';
+  if (typeof rxCounter !== 'undefined') rxCounter = 0;
+  addRxRow();
+  try {
+    const { visits } = await api('/api/visits');
+    const v = visits.find(x => x.id === visitId);
+    if (v) {
+      currentVisit.patientId = v.patientId;
+      loadPatientHistory(v.patientId);
+    }
+  } catch(e) {}
+  showPage('consultation');
+}
+
+function openPrintWindow(title, bodyHtml) {
+  const w = window.open('', '_blank', 'width=800,height=600');
+  w.document.write('<!DOCTYPE html><html><head><title>' + title + '</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#111}h1{font-size:18px;margin:0 0 4px}.sub{color:#555;font-size:12px;margin-bottom:16px}.meta{font-size:13px;margin-bottom:12px}.footer{margin-top:32px;font-size:12px;color:#666}@media print{button{display:none}}</style></head><body>' + bodyHtml + '<div class="footer">Clinic X · Printed ' + new Date().toLocaleString() + '</div><script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>');
+  w.document.close();
+}
+
+function printMC() {
+  if (!currentVisit) { alert('No active consultation'); return; }
+  const days = prompt('MC days:', '1') || '1';
+  const diagnosis = document.getElementById('consult-diagnosis').value || '';
+  const from = new Date().toISOString().slice(0,10);
+  const toD = new Date();
+  toD.setDate(toD.getDate() + Number(days) - 1);
+  const to = toD.toISOString().slice(0,10);
+  api('/api/mcs', { method: 'POST', body: JSON.stringify({ patientId: currentVisit.patientId, visitId: currentVisit.id, patientName: currentVisit.patientName, days: Number(days), fromDate: from, toDate: to, diagnosis, reason: diagnosis }) }).catch(function(){});
+  openPrintWindow('Medical Certificate', '<h1>MEDICAL CERTIFICATE</h1><div class="sub">Clinic X</div><div class="meta"><p><b>Patient:</b> ' + currentVisit.patientName + '</p><p><b>Date:</b> ' + from + '</p><p><b>Diagnosis:</b> ' + (diagnosis || '-') + '</p><p>This is to certify that the above-named patient was examined and is advised medical leave for <b>' + days + ' day(s)</b> from <b>' + from + '</b> to <b>' + to + '</b>.</p></div><p style="margin-top:40px">_________________________<br/>Doctor\'s Signature</p>');
+}
+
+function printPrescriptionLabel() {
+  if (!currentVisit) { alert('No active consultation'); return; }
+  const rows = [];
+  document.querySelectorAll('#rx-list > div').forEach(function(row) {
+    const drug = row.querySelector('.rx-drug') && row.querySelector('.rx-drug').value.trim();
+    if (drug) rows.push({ drug: drug, dosage: (row.querySelector('.rx-dosage') && row.querySelector('.rx-dosage').value) || '', qty: (row.querySelector('.rx-qty') && row.querySelector('.rx-qty').value) || '1', instruction: (row.querySelector('.rx-instruction') && row.querySelector('.rx-instruction').value) || '' });
+  });
+  if (!rows.length) { alert('Add at least one drug first'); return; }
+  const labels = rows.map(function(r) {
+    return '<div style="border:1px dashed #999;padding:12px;margin-bottom:12px;width:280px"><div style="font-weight:bold;font-size:14px">Clinic X</div><div style="font-size:12px;margin:6px 0">' + currentVisit.patientName + '</div><div style="font-size:13px;font-weight:bold">' + r.drug + '</div><div style="font-size:12px">' + r.dosage + ' · Qty: ' + r.qty + '</div><div style="font-size:12px;margin-top:4px">' + r.instruction + '</div><div style="font-size:10px;color:#666;margin-top:6px">' + new Date().toLocaleDateString() + '</div></div>';
+  }).join('');
+  openPrintWindow('Prescription Labels', labels);
+}
+
+function printReceipt(visitId, patientName) {
+  const amount = prompt('Receipt amount (RM):', '0') || '0';
+  openPrintWindow('Official Receipt', '<h1>OFFICIAL RECEIPT</h1><div class="sub">Clinic X</div><div class="meta"><p><b>Receipt No:</b> R-' + visitId + '-' + Date.now().toString().slice(-4) + '</p><p><b>Patient:</b> ' + patientName + '</p><p><b>Date:</b> ' + new Date().toLocaleString() + '</p><p><b>Amount Paid:</b> RM ' + Number(amount).toFixed(2) + '</p><p><b>Payment Method:</b> Cash / Card / Panel</p></div><p style="margin-top:32px">Thank you.</p>');
+}
+
+async function loadAgingReport() {
+  try {
+    const data = await api('/api/reports/aging');
+    const s = data.summary;
+    document.getElementById('report-result').classList.remove('hidden');
+    document.getElementById('report-result').innerHTML = '<h3 class="font-semibold mb-3">Corporate Aging / Outstanding Report</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4 text-sm"><div class="bg-slate-50 rounded-lg p-3"><div class="text-xs text-slate-500">Current</div><div class="font-bold">RM ' + s.current.toFixed(2) + '</div></div><div class="bg-yellow-50 rounded-lg p-3"><div class="text-xs text-slate-500">1-30 days</div><div class="font-bold">RM ' + s.d1_30.toFixed(2) + '</div></div><div class="bg-orange-50 rounded-lg p-3"><div class="text-xs text-slate-500">31-60 days</div><div class="font-bold">RM ' + s.d31_60.toFixed(2) + '</div></div><div class="bg-red-50 rounded-lg p-3"><div class="text-xs text-slate-500">61-90 days</div><div class="font-bold">RM ' + s.d61_90.toFixed(2) + '</div></div><div class="bg-red-100 rounded-lg p-3"><div class="text-xs text-slate-500">90+ days</div><div class="font-bold">RM ' + s.d90plus.toFixed(2) + '</div></div></div><p class="text-sm mb-2">Total Outstanding: <b>RM ' + s.total.toFixed(2) + '</b></p><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="text-left p-2">Invoice</th><th class="text-left p-2">Corporate</th><th class="text-left p-2">Date</th><th class="text-left p-2">Days</th><th class="text-left p-2">Bucket</th><th class="text-left p-2">Outstanding</th></tr></thead><tbody>' + (data.aging.map(function(a){ return '<tr class="border-t"><td class="p-2">INV-' + a.id + '</td><td class="p-2">' + (a.corporateName||'-') + '</td><td class="p-2">' + (a.invoiceDate||'-') + '</td><td class="p-2">' + a.daysOutstanding + '</td><td class="p-2">' + a.bucket + '</td><td class="p-2 font-medium">RM ' + Number(a.outstanding).toFixed(2) + '</td></tr>'; }).join('') || '<tr><td colspan="6" class="p-4 text-center text-slate-400">No outstanding invoices</td></tr>') + '</tbody></table>';
+  } catch (e) { alert(e.message); }
+}
+
+
+// ========== UX HELPERS ==========
+function toast(msg, type) {
+  type = type || 'info';
+  const colors = { info: 'bg-slate-800', success: 'bg-emerald-600', error: 'bg-red-600', warn: 'bg-amber-500' };
+  const el = document.createElement('div');
+  el.className = (colors[type] || colors.info) + ' text-white text-sm px-4 py-2.5 rounded-lg shadow-lg max-w-sm animate-pulse';
+  el.textContent = msg;
+  const box = document.getElementById('toast-container');
+  if (box) { box.appendChild(el); setTimeout(function(){ el.remove(); }, 3200); }
+  else { console.log(msg); }
+}
+
+function confirmAction(message) {
+  return window.confirm(message);
+}
+
+// Improved new patient modal with visit reasons
+function showNewPatientModal() {
+  openModal(`
+    <h3 class="font-bold text-lg mb-1">Register New Patient</h3>
+    <p class="text-xs text-slate-500 mb-4">Fill patient details. You can register a visit after saving.</p>
+    <form id="np-form" class="space-y-3">
+      <input name="name" placeholder="Full Name *" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      <div class="grid grid-cols-2 gap-2">
+        <input name="icNo" placeholder="IC / Passport" class="border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        <select name="gender" class="border border-slate-300 rounded-lg px-3 py-2 text-sm"><option value="">Gender</option><option>Male</option><option>Female</option></select>
+      </div>
+      <input name="phone" placeholder="Phone" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      <div class="grid grid-cols-2 gap-2">
+        <select name="patientType" id="np-type" class="border border-slate-300 rounded-lg px-3 py-2 text-sm"><option value="cash">Cash</option><option value="panel">Panel</option></select>
+        <input name="panelCompany" placeholder="Panel company" class="border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+      </div>
+      <input name="allergies" placeholder="Drug allergies (important)" class="w-full border border-amber-300 rounded-lg px-3 py-2 text-sm bg-amber-50" />
+      <div class="flex gap-2 pt-1">
+        <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Save Patient</button>
+        <button type="button" onclick="closeModal()" class="border px-4 py-2 rounded-lg text-sm">Cancel</button>
+      </div>
+    </form>`);
+  document.getElementById('np-form').onsubmit = async function(e) {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target));
+    try {
+      const res = await api('/api/patients', { method:'POST', body: JSON.stringify(body) });
+      closeModal();
+      toast('Patient registered: ' + body.name, 'success');
+      loadPatients();
+      if (confirmAction("Register this patient into today's queue now?")) {
+        registerVisitFor(res.patient.id);
+      }
+    } catch(err) { toast(err.message, 'error'); }
+  };
+}
+
+async function registerVisitFor(patientId) {
+  const reasons = ['General', 'Fever', 'Cough', 'Backache', 'Headache', 'Hypertension', 'Diabetes', 'Follow-up', 'Medical Check'];
+  openModal(`
+    <h3 class="font-bold text-lg mb-3">Register Visit</h3>
+    <p class="text-sm text-slate-500 mb-3">Select reason for visit</p>
+    <div class="flex flex-wrap gap-2 mb-4" id="reason-chips">
+      ${reasons.map(r => `<button type="button" data-reason="${r}" class="reason-chip px-3 py-1.5 rounded-full border text-sm hover:bg-blue-50 hover:border-blue-400">${r}</button>`).join('')}
+    </div>
+    <input id="visit-reason-input" placeholder="Or type reason..." class="w-full border rounded-lg px-3 py-2 text-sm mb-4" />
+    <div class="flex gap-2">
+      <button id="btn-confirm-visit" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">Add to Queue</button>
+      <button onclick="closeModal()" class="border px-4 py-2 rounded-lg text-sm">Cancel</button>
+    </div>`);
+  let selected = 'General';
+  document.querySelectorAll('.reason-chip').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.reason-chip').forEach(b => b.classList.remove('bg-blue-100','border-blue-500'));
+      btn.classList.add('bg-blue-100','border-blue-500');
+      selected = btn.dataset.reason;
+      document.getElementById('visit-reason-input').value = selected;
+    };
+  });
+  document.getElementById('btn-confirm-visit').onclick = async () => {
+    const reason = document.getElementById('visit-reason-input').value || selected;
+    try {
+      await api('/api/visits', { method:'POST', body: JSON.stringify({ patientId, reason }) });
+      closeModal();
+      toast('Patient added to queue', 'success');
+      showPage('queue');
+      loadQueue();
+    } catch(e) { toast(e.message, 'error'); }
+  };
+}
+
+// Drug picker from inventory when adding Rx
+async function addRxRow() {
+  const stocks = (await api('/api/stocks').catch(() => ({stocks:[]}))).stocks || [];
+  const div = document.createElement('div');
+  div.className = 'flex flex-wrap gap-2 items-start bg-slate-50 p-2 rounded-lg';
+  const options = stocks.map(s => `<option value="${s.name}" data-psycho="${s.isPsychotropic?1:0}">${s.name} (qty:${s.qty})</option>`).join('');
+  div.innerHTML = `
+    <div class="flex-1 min-w-[140px]">
+      <input list="drug-list" placeholder="Drug name" class="border rounded px-2 py-1.5 w-full text-sm rx-drug" />
+      <datalist id="drug-list">${options}</datalist>
+    </div>
+    <input placeholder="Dosage" class="border rounded px-2 py-1.5 w-24 text-sm rx-dosage" />
+    <input type="number" value="1" min="1" class="border rounded px-2 py-1.5 w-16 text-sm rx-qty" />
+    <input placeholder="Instruction e.g. 1 tab TDS" class="border rounded px-2 py-1.5 flex-1 min-w-[120px] text-sm rx-instruction" />
+    <button type="button" class="text-red-500 text-xs px-1" onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.getElementById('rx-list').appendChild(div);
+}
+
+// Allergy warning when saving consultation
+async function saveConsultation() {
+  if (!currentVisit) return;
+  const prescriptions = [];
+  document.querySelectorAll('#rx-list > div').forEach(row => {
+    const drug = row.querySelector('.rx-drug') && row.querySelector('.rx-drug').value.trim();
+    if (drug) prescriptions.push({
+      drugName: drug,
+      dosage: (row.querySelector('.rx-dosage') && row.querySelector('.rx-dosage').value) || '',
+      quantity: Number((row.querySelector('.rx-qty') && row.querySelector('.rx-qty').value) || 1),
+      instruction: (row.querySelector('.rx-instruction') && row.querySelector('.rx-instruction').value) || ''
+    });
+  });
+  // allergy check
+  if (currentVisit.patientId) {
+    try {
+      const { patient } = await api('/api/patients/' + currentVisit.patientId + '/history');
+      const allergies = (patient.allergies || '').toLowerCase();
+      if (allergies) {
+        const hit = prescriptions.filter(p => allergies.includes(p.drugName.toLowerCase().split(' ')[0]));
+        if (hit.length && !confirmAction('ALLERGY WARNING: Patient may be allergic to: ' + hit.map(h=>h.drugName).join(', ') + '. Continue?')) {
+          return;
+        }
+      }
+    } catch(e) {}
+  }
+  try {
+    await api('/api/consultations', {
+      method:'POST',
+      body: JSON.stringify({
+        visitId: currentVisit.id,
+        notes: document.getElementById('consult-notes').value,
+        diagnosis: document.getElementById('consult-diagnosis').value,
+        prescriptions
+      })
+    });
+    toast('Consultation saved · sent to Dispensary', 'success');
+    currentVisit = null;
+    document.getElementById('consult-form').classList.add('hidden');
+    document.getElementById('consult-empty').classList.remove('hidden');
+    showPage('queue');
+    loadQueue();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+
+// INIT
+document.getElementById('login-form').addEventListener('submit', login);
+document.getElementById('btn-logout').addEventListener('click', logout);
+if (token) {
+  api('/api/me').then(d => { currentUser = d.user; showApp(); }).catch(() => { localStorage.removeItem('clinicx_token'); token=null; });
+}
+</script>
+</body>
+</html>
